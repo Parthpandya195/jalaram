@@ -49,3 +49,6 @@ a {
 .header-pages>ul>li{
     margin-right: 6%;
 }
+li:hover{
+    color: red;
+}

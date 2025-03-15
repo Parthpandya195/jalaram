@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import './ManageProducts.css';
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]); // Ensure initial state is an array
@@ -31,16 +32,25 @@ const ManageProducts = () => {
     fetchProducts();
   }, []);
 
-  // Delete product
+  // ✅ Updated Delete Function
   const deleteProduct = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/products/${id}`);
-        setProducts(products.filter((product) => product._id !== id));
-        alert('Product deleted!');
+        const response = await axios.delete(`http://localhost:5000/api/products/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.status === 200) {
+          setProducts(products.filter((product) => product._id !== id));
+          alert('Product deleted successfully!');
+        } else {
+          throw new Error("Failed to delete product. Try again.");
+        }
       } catch (error) {
-        console.error('Error deleting product:', error.message);
-        alert('Failed to delete product');
+        console.error('Error deleting product:', error.response?.data?.message || error.message);
+        alert('Failed to delete product: ' + (error.response?.data?.message || error.message));
       }
     }
   };

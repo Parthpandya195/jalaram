@@ -25,12 +25,14 @@ import LoginPage from './userLogin/Login';
 import Signup from './userLogin/signUp';
 import AdminDashboard from './admin/pages/AdminDashboard';
 import UserDashboard from './user/pages/UserDashboard';
+import Cart from './user/components/Cart';  // ✅ New import
+import Checkout from './user/components/Checkout';  // ✅ New import
 
 function Layout({ children }) {
   const location = useLocation();
 
   // Define routes where Header and Footer are not needed
-  const noHeaderFooterRoutes = ['/login','/signup'];
+  const noHeaderFooterRoutes = ['/login', '/signup'];
 
   const shouldRenderHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname.toLowerCase());
 
@@ -51,7 +53,7 @@ function App() {
         <Routes>
           <Route path="/contact" element={<Contact />} />
           <Route path="/Login" element={<LoginPage />} />
-          <Route path="/Signup" element={<Signup/>} />
+          <Route path="/Signup" element={<Signup />} />
           <Route path="/restricted-page" element={<RestrictedPage />} />
           <Route path="/pricing" element={<PricingPlan />} />
           <Route path="/faq" element={<Faq />} />
@@ -71,7 +73,8 @@ function App() {
           <Route path="/privacy-policy" element={<Privacy />} />
           <Route path="/AdminDashboard" element={<AdminDashboard />} />
           <Route path="/UserDashboard" element={<UserDashboard />} />
-
+          <Route path="/cart" element={<Cart />} />  {/* ✅ New Route for Cart */}
+          <Route path="/checkout" element={<Checkout />} />  {/* ✅ New Route for Checkout */}
         </Routes>
       </Layout>
     </BrowserRouter>

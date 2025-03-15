@@ -1,119 +1,140 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
-import connectDB from './config/db.js'; // MongoDB connection
-import User from './models/User.js';
-import bcrypt from 'bcryptjs'; // bcryptjs for password hashing
-import authRoutes from './routes/Auth.js';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import mongoose from "mongoose";
+import connectDB from "./config/db.js"; // MongoDB connection
+import User from "./models/User.js";
+import bcrypt from "bcryptjs"; // bcryptjs for password hashing
+import authRoutes from "./routes/Auth.js";
+import productRoutes from "./routes/productRoutes.js"; // Import product routes
 
-// Use require for CommonJS modules
-import productRoutes from './routes/productRoutes.js';
-
-dotenv.config(); // Load environment variables from .env file
+dotenv.config();
 const PORT = process.env.PORT || 5000;
 const app = express();
 
-// Middleware to parse JSON request bodies
 app.use(express.json());
 
-// CORS configuration (to allow your React frontend to connect)
-app.use(cors({
-  origin: 'http://localhost:3000', // Allow React app on localhost:3000 to connect
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
-}));
-
-// MongoDB connection
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/testing';
+const corsOptions = {
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+};
+app.use(cors(corsOptions));
+app.options("*", cors());
 
 mongoose
-  .connect(MONGO_URI, {
+  .connect(process.env.MONGO_URI || "mongodb://localhost:27017/testing", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('MongoDB connected'))
-  .catch((error) => console.error('MongoDB connection error:', error));
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((error) => console.error("❌ MongoDB connection error:", error));
 
-// Route for user login
-app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
+app.use("/api/Auth", authRoutes);
+app.use("/api/products", productRoutes);
 
-  // Debugging logs
-  console.log('Request body:', req.body);
+// ====================== 🆕 ORDER SYSTEM (NO PAYMENT) ======================
 
-  if (!email || !password) {
-    return res.status(400).json({ success: false, message: 'Email and password are required' });
-  }
+// ✅ Define Order Schema
+const orderSchema = new mongoose.Schema(
+  {
+    buyerName: String,
+    email: String,
+    phone: String,
+    products: Array, // Cart items
+    deliveryDetails: Object,
+    status: { type: String, default: "Pending" }, // Default status
+    createdAt: { type: Date, default: Date.now },
+  },
+  { timestamps: true }
+);
 
+const Order = mongoose.model("Order", orderSchema);
+
+// ✅ User places an order (WITHOUT PAYMENT)
+app.post("/api/order", async (req, res) => {
   try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ success: false, message: 'Invalid credentials 11' });
+    const { buyerName, email, phone, products, deliveryDetails } = req.body;
+    
+    // Validate input
+    if (!buyerName || !email || !phone || !products || !deliveryDetails) {
+      return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ success: false, message: 'Invalid credentials 22' });
-    }
+    // Save the order in MongoDB
+    const newOrder = new Order({ buyerName, email, phone, products, deliveryDetails });
+    await newOrder.save();
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-    res.json({ success: true, token });
-  } catch (err) {
-    console.error('Error during login:', err);
-    res.status(500).json({ success: false, message: 'An error occurred during login' });
+    res.json({ success: true, message: "✅ Order placed successfully!", orderId: newOrder._id });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "❌ Server error. Try again." });
   }
 });
 
-// Signup route
-app.post('/api/signup', async (req, res) => {
-  const { email, password } = req.body;
-
+// ✅ Admin fetches all orders
+app.get("/api/orders", async (req, res) => {
   try {
-    // Check if the user already exists
-    const userExists = await User.findOne({ email });
-
-    if (userExists) {
-      return res.status(400).json({ success: false, message: 'User already exists' });
-    }
-
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create a new user and save it
-    const newUser = new User({ email, password: hashedPassword });
-    await newUser.save();
-
-    res.status(201).json({ success: true, message: 'User created successfully' });
-  } catch (err) {
-    console.error('Error during signup:', err);
-    res.status(500).json({ success: false, message: 'An error occurred while signing up' });
+    const orders = await Order.find();
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ success: false, message: "❌ Server error. Try again." });
   }
 });
 
-// Root route to verify the server is up
-app.get('/', (req, res) => {
-  res.send('Server is up and running!');
+// ✅ Admin confirms an order
+app.put("/api/orders/:id/confirm", async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    await Order.findByIdAndUpdate(orderId, { status: "Confirmed" });
+
+    res.json({ success: true, message: "✅ Order confirmed!" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "❌ Server error. Try again." });
+  }
 });
 
-// Routes
-app.use('/api/Auth', authRoutes);
-app.use('/api/products', productRoutes);
-// app.use('/api/orders', orderRoutes);
+// ✅ Admin rejects an order
+app.put("/api/orders/:id/reject", async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    await Order.findByIdAndUpdate(orderId, { status: "Rejected" });
 
-// Error handling middleware (for unexpected errors)
+    res.json({ success: true, message: "❌ Order rejected." });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "❌ Server error. Try again." });
+  }
+});
+
+// ✅ User tracks order status by Order ID
+app.get("/api/orders/:orderId", async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, message: "❌ Order not found." });
+    }
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ success: false, message: "❌ Server error. Try again." });
+  }
+});
+
+// ✅ Root route to verify server is running
+app.get("/", (req, res) => {
+  res.send("✅ Server is up and running!");
+});
+
+// ✅ Error Handling Middleware (for unexpected errors)
 app.use((err, req, res, next) => {
-  console.error('Unexpected error:', err);
-  res.status(500).json({ success: false, message: 'An unexpected error occurred' });
+  console.error("❌ Unexpected error:", err);
+  res.status(500).json({ success: false, message: "An unexpected error occurred" });
 });
 
-// Default route for invalid endpoints
+// ✅ Default Route for Invalid API Endpoints
 app.use((req, res) => {
-  res.status(404).json({ success: false, message: 'API endpoint not found' });
+  res.status(404).json({ success: false, message: "❌ API endpoint not found" });
 });
 
-// Start the server
+// ✅ Start the Server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

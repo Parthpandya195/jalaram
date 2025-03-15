@@ -1,0 +1,85 @@
+.admin-orders {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.admin-orders h2 {
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.order {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.order:hover {
+  transform: scale(1.02);
+}
+
+.order h3 {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.order p {
+  font-size: 16px;
+  color: #666;
+  margin: 4px 0;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+button:first-of-type {
+  background: #28a745;
+  color: white;
+}
+
+button:first-of-type:hover {
+  background: #218838;
+}
+
+button:last-of-type {
+  background: #dc3545;
+  color: white;
+}
+
+button:last-of-type:hover {
+  background: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .admin-orders {
+      max-width: 90%;
+      padding: 15px;
+  }
+
+  .order {
+      padding: 12px;
+  }
+
+  button {
+      width: 100%;
+      margin-top: 5px;
+  }
+}

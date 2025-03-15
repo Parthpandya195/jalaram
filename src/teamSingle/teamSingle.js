@@ -35,8 +35,8 @@ export function TeamSingle() {
         </div>
         <div className="p-d-content">
           <div className="p-d-info">
-            <h1>John Smith</h1>
-            <p className="job">Designer</p>
+            <h1>parth pandya</h1>
+            <p className="job">Head of Project</p>
             <p className="subcontent">
               Lorem ipsum dolor sit amet, adipiscing Aliquam eu sem vitae
               turpmaximus.posuere in.Contrpobelie frandomised words which don't

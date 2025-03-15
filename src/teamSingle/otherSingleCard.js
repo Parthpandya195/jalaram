@@ -1,5 +1,5 @@
 import "./otherSingleCard.css";
-import photo from "../images/team/member5.png";
+import photo from "../images/team/member6.png";
 
 export function OtherSingleCard(props) {
   return (
