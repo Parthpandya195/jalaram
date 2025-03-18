@@ -1,11 +1,35 @@
-// backend/routes/contactroutes.js
-
-import express from 'express';
-import { saveContactData } from '../controllers/contactController.js'; // Import the function from contactController
+import express from "express";
+import Contact from "../models/Contact.js";  // ✅ Import the Contact model
 
 const router = express.Router();
 
-// Define the POST route to handle contact form data submission
-router.post('/', saveContactData);  // When POST is sent to '/api/contact', call saveContactData
+// ✅ Route to handle contact form submissions
+router.post("/", async (req, res) => {
+  const { fullname, email, subject, phone, message } = req.body;
 
-export default router;  // Export the router to be used in server.js
+  // ✅ Validate the form data
+  if (!fullname || !email || !subject || !phone || !message) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    // ✅ Save the form data to MongoDB
+    const newContact = new Contact({
+      fullname,
+      email,
+      subject,
+      phone,
+      message
+    });
+
+    await newContact.save();
+
+    res.status(201).json({ message: "✅ Message saved successfully!" });
+
+  } catch (error) {
+    console.error("❌ Error saving message:", error);
+    res.status(500).json({ message: "❌ Server error. Try again later." });
+  }
+});
+
+export default router;

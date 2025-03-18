@@ -28,7 +28,6 @@ const AdminDashboard = () => {
     <div>
       {!isAuthenticated ? (
         <div>
-          <h2>Admin Login</h2>
           <form onSubmit={handleLogin}>
             <div>
               <label>Username:</label>

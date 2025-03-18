@@ -17,15 +17,15 @@ export function Header() {
       </div>
       <div className="header-pages">
         <ul>
-            <li><Link to={`/`}>Home</Link></li>
-            <li><Link to={`team`}>Team</Link></li>
-            <li><Link to={`/services`}>Services</Link></li>
-            <li><Link to={`/projects`}>Projects</Link></li>
-            <li><Link to={`/blog`}>Blog</Link></li>
-            <li><Link to={`/contact`}>Contact</Link></li>
-            <li><Link to={`/Signup`}>Login</Link></li>
-            <li><Link to={`/AdminDashboard`}>admin</Link></li>
-            <Link to={`/UserDashboard`}>our product</Link>
+            <li><Link to={`/`}>HOME</Link></li>
+            <li><Link to={`team`}>TEAM</Link></li>
+            <li><Link to={`/services`}>SERVICES</Link></li>
+            <li><Link to={`/projects`}>PROJECTS</Link></li>
+            <li><Link to={`/blog`}>BLOG</Link></li>
+            <li><Link to={`/contact`}>CONTACT</Link></li>
+            <li><Link to={`/Signup`}>LOGIN</Link></li>
+          {/* <Link to={`/AdminDashboard`}></Link> */}
+            <Link to={`/UserDashboard`}>PRODUCTS</Link>
 
         </ul>
         

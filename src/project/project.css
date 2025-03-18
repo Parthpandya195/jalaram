@@ -53,6 +53,11 @@
   border: none;
   cursor: pointer;
 }
+.project-categories > ul > ol:hover{
+  background-color: #cda274;
+  color: white;
+  transition: 0.3s ease-in;
+}
 
 .takenCategory {
   background-color: #cda274;
@@ -154,4 +159,9 @@
   display: flex;
   justify-content: center;
   cursor: pointer;
+}
+.op-pro-btn > a > button:hover {
+  background-color: #cda274;
+  color: white;
+  transform: scale(1.1);
 }

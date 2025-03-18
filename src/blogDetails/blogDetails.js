@@ -9,28 +9,79 @@ import { BsArrowRight, BsSearch } from "react-icons/bs";
 import photo1 from "../images/blogContent1.png";
 import photo2 from "../images/blogContent2.png";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";  // ✅ Import axios for API requests
 
 export function BlogDetails() {
+  // State to store form data
+  const [formData, setFormData] = useState({
+    fullname: "",
+    email: "",
+    subject: "",
+    phone: "",
+    message: "",
+  });
 
-  const handleChange=(e)=>{
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleChange = (e) => {
     const pClassList = e.target.parentElement;
-    if(e.target.classList.contains("nonselected")){
-    for (let i=0; i<pClassList.childNodes.length;i++){
-      if(pClassList.childNodes[i].className === ("blogD-tag selected")){
-        pClassList.childNodes[i].className = "blogD-tag nonselected"
+    if (e.target.classList.contains("nonselected")) {
+      for (let i = 0; i < pClassList.childNodes.length; i++) {
+        if (pClassList.childNodes[i].className === "blogD-tag selected") {
+          pClassList.childNodes[i].className = "blogD-tag nonselected";
+        }
       }
-    }
-          e.target.classList.remove("nonselected")
-      e.target.classList.add("selected")
-    }
-    else if(e.target.classList.contains("selected")) {
-      for (let i=0; i<pClassList.childNodes.length;i++){
-        if(pClassList.childNodes[i].className === ("blogD-tag selected")){
-          pClassList.childNodes[i].className = "blogD-tag nonselected"
+      e.target.classList.remove("nonselected");
+      e.target.classList.add("selected");
+    } else if (e.target.classList.contains("selected")) {
+      for (let i = 0; i < pClassList.childNodes.length; i++) {
+        if (pClassList.childNodes[i].className === "blogD-tag selected") {
+          pClassList.childNodes[i].className = "blogD-tag nonselected";
         }
       }
     }
-  }
+  };
+
+  // ✅ Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // ✅ Submit form data to MongoDB
+  const handleSubmit = async () => {
+    setLoading(true);
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/blog-contact", formData);
+
+      if (response.data.success) {
+        setSuccessMessage("✅ Message sent successfully!");
+        setFormData({
+          fullname: "",
+          email: "",
+          subject: "",
+          phone: "",
+          message: "",
+        });
+      } else {
+        setErrorMessage("❌ Failed to send message. Try again.");
+      }
+    } catch (error) {
+      console.error("❌ Error submitting form:", error);
+      setErrorMessage("❌ Server error. Try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="blogDetails">
@@ -47,137 +98,69 @@ export function BlogDetails() {
           </div>
           <div className="bc-text t1">
             <p>
-              Lorem ipsum dolor sit amet, adipiscing Aliquam eu sem vitae
-              turpmaximus.posuere in.Contrary to popular belief.There are many
-              variations of passages of Lorem Ipsum available, but the majority
-              have suffered alteration in some form, by injecthumour, or
-              randomised words which don't look even slightly believable.
-              <br />
-              <br />
-              Embarrassing hidden in the middle of text. All the Lorem Ipsum
-              generators on the Internet tend to repeat predefined chunks as
-              necessary.
-            </p>
-          </div>
-          <div className="blogD-quotes">
-            <div className="blogD-q-content">
-              <h1>“</h1>
-              <p className="blogD-q-comment">
-                The details are not the details. They make the design.
-              </p>
-            </div>
-          </div>
-
-          <div className="bc-text t2">
-            <h1>Design sprints are great</h1>
-            <p>
-              Lorem ipsum dolor sit amet, adipiscing Aliquam eu sem vitae
-              turpmaximus.posuere in.Contrary to popular belief.There are many
-              variations of passages of Lorem Ipsum available, but the majority
-              have suffered.
-              <ul>
-                <li>
-                  Contrary to popular belief.There are many variations of
-                  passages of Lorem Ipsum available, but the majority have
-                  suffered.
-                </li>
-                <li>
-                  Contrary to popular belief.There are many variations of
-                  passages of Lorem Ipsum available, but the majority have
-                  suffered.
-                </li>
-                <li>
-                  Contrary to popular belief.There are many variations of
-                  passages of Lorem Ipsum available, but the majority have
-                  suffered.
-                </li>
-              </ul>
-            </p>
-          </div>
-          <div className="bc-photo">
-            <img src={photo2} alt="blog"></img>
-          </div>
-
-          <div className="bc-text t3">
-            <p>
-              Lorem ipsum dolor sit amet, adipiscing Aliquam eu sem vitae
-              turpmaximus.posuere in.Contrary to popular belief.There are many
-              variations of passages of Lorem Ipsum available, but the majority
-              have suffered.
+              Lorem ipsum dolor sit amet, adipiscing Aliquam eu sem vitae...
             </p>
           </div>
 
-          <div className="blogD-share">
-            <div className="bd-tags">
-              <div className="bd-main-tag">
-                <p className="tag">Tags</p>
-              </div>
-              <div className="bd-other-tags">
-                <p className="one">Kitchen</p>
-                <p className="two">Bedroom</p>
-              </div>
-            </div>
-            <div className="bd-smedias">
-              <ul>
-                <li>
-                  <a href="https://www.facebook.com/">
-                    <FaFacebookF />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.instagram.com/">
-                    <FaInstagram />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.twitter.com/">
-                    <FaTwitter />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.linkedin.com/">
-                    <FaLinkedin />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
           <div className="blog-leave-reply">
             <p>Leave a Reply</p>
+            
             <div className="nameEmail">
-              <input name="fullname" placeholder="Name" />
-              <input name="mail" placeholder="Email" />
-            </div>
-            <div className="sitePhone">
-              <input name="site" placeholder="Subject" />
-              <input name="phone" placeholder="Phone" />
-            </div>
-            <div className="interested">
-              <textarea
-                name="interested"
-                placeholder="Hello, I am interested in.."
+              <input
+                name="fullname"
+                placeholder="Name"
+                value={formData.fullname}
+                onChange={handleInputChange}
+              />
+              <input
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleInputChange}
               />
             </div>
+
+            <div className="sitePhone">
+              <input
+                name="subject"
+                placeholder="Subject"
+                value={formData.subject}
+                onChange={handleInputChange}
+              />
+              <input
+                name="phone"
+                placeholder="Phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="interested">
+              <textarea
+                name="message"
+                placeholder="Hello, I am interested in.."
+                value={formData.message}
+                onChange={handleInputChange}
+              />
+            </div>
+
             <div className="blogD-saving-send">
-              <div className="blogD-saving">
-                <input type="checkbox" name="remember-mail" />
-                <label>
-                  Save my name, email, and website in this browser for the next
-                  time I comment.
-                </label>
-              </div>
               <div className="send">
-                <button>
-                  Send Now
+                <button onClick={handleSubmit} disabled={loading}>
+                  {loading ? "Sending..." : "Send Now"}
                   <BsArrowRight style={{ marginLeft: "5px" }} color="#CDA274" />
                 </button>
               </div>
             </div>
+
+            {successMessage && <p className="success-message">{successMessage}</p>}
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
           </div>
         </div>
+
         <div className="blogD-sidebar">
           <div className="search-box">
-            <input type="search" name="seacrh" placeholder="Search" />
+            <input type="search" name="search" placeholder="Search" />
             <button>
               <BsSearch />
             </button>
@@ -188,39 +171,15 @@ export function BlogDetails() {
               <Link to={`/blog-details`}><p className="news-title">We Focus On Comfort And Gorgeous</p></Link>
               <p className="news-date">28/02/2023</p>
             </div>
-            <div className="news">
-            <Link to={`/blog-details`}><p className="news-title">We Focus On Comfort And Gorgeous</p></Link>
-              <p className="news-date">28/02/2023</p>
-            </div>
-            <div className="news">
-            <Link to={`/blog-details`}><p className="news-title">We Focus On Comfort And Gorgeous</p></Link>
-              <p className="news-date">28/02/2023</p>
-            </div>
           </div>
           <div className="blogD-categories">
             <h2>Categories</h2>
             <ul>
-              <ol>Decoration</ol>
-              <ol>Door Windows</ol>
-              <ol>Home Land</ol>
-              <ol>Roof Installation</ol>
+              <li>Decoration</li>
+              <li>Door Windows</li>
+              <li>Home Land</li>
+              <li>Roof Installation</li>
             </ul>
-          </div>
-          <div className="blogD-alltags">
-            <h2>Tags</h2>
-            <div className="blogD-tags">
-              <p
-                className="blogD-tag nonselected"
-                  onClick={handleChange}
-              >
-                Kitchen
-              </p>
-              <p className="blogD-tag nonselected"   onClick={handleChange}
-              >Bedroom</p>
-              <p className="blogD-tag nonselected" onClick={handleChange}>Building</p>
-              <p className="blogD-tag nonselected" onClick={handleChange}>Architecture</p>
-              <p className="blogD-tag nonselected" onClick={handleChange}>Kitchen Planing</p>
-            </div>
           </div>
         </div>
       </div>

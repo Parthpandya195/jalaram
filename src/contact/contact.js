@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import "./contact.css"
+import { useState } from "react";
+import "./contact.css";
 import { BsArrowRight } from "react-icons/bs";
 
 export function Contact() {
   const [formData, setFormData] = useState({
-    fullname: '',
-    email: '',
-    subject: '',
-    phone: '',
-    message: ''
+    fullname: "",
+    email: "",
+    subject: "",
+    phone: "",
+    message: ""
   });
 
   const handleChange = (e) => {
@@ -23,32 +23,31 @@ export function Contact() {
     e.preventDefault();
     const { fullname, email, subject, phone, message } = formData;
 
-    // Client-side validation
     if (!fullname || !email || !subject || !phone || !message) {
-      alert('All fields are required');
+      alert("All fields are required");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(formData)
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
-        alert('Message sent successfully!');
-        setFormData({ fullname: '', email: '', subject: '', phone: '', message: '' }); // Clear form
+        alert("✅ Message saved successfully!");
+        setFormData({ fullname: "", email: "", subject: "", phone: "", message: "" }); // Clear form
       } else {
-        alert('Error: ' + data.message);
+        alert("❌ Error: " + data.message);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('An error occurred. Please try again.');
+      console.error("Error submitting form:", error);
+      alert("❌ An error occurred. Please try again.");
     }
   };
 
@@ -62,11 +61,6 @@ export function Contact() {
       <div className="contact-content">
         <h2>We love meeting new people and helping them.</h2>
         <div className="contact-form">
-          <div className="contact-form-info">
-            <div className="icons">
-              {/* You can put contact info here */}
-            </div>
-          </div>
           <form onSubmit={handleSubmit} className="contact-form-fill">
             <div className="nameEmail">
               <input
@@ -113,7 +107,6 @@ export function Contact() {
           </form>
         </div>
       </div>
-      {/* Add Google Map here */}
     </div>
   );
 }

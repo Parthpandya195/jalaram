@@ -1,54 +1,102 @@
+/* ✅ General styling */
 .header {
-    width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    background-color: #f8f8f8; /* Light background */
+    padding: 15px 13%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: all 0.3s ease-in-out;
 }
 
+/* ✅ Link Styling */
 a {
     text-decoration: none;
-    color: black;
+    color: #333; 
+    transition: color 0.3s ease-in-out;
 }
 
-.header-logo-text{
-    font-family: 'DM Serif Display';
-    font-size: 22px;
-    width: 30%;
+/* ✅ Logo and text container */
+.header-logo-text {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-left: 13%;
-}
-
-.header-text{
-    width: 80%;
-}
-
-.header-logo {
-    display: flex;
-    width: 8%;
     align-items: center;
+    gap: 10px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: #333;
+    transition: transform 0.3s ease-in-out;
 }
 
-.header-logo>img{
+/* ✅ Logo Styling */
+.header-logo img {
+    width: 60px; 
+    height: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+.header-logo-text:hover {
+    transform: scale(1.1); /* Slight scale-up on hover */
+}
+
+/* ✅ Navbar menu */
+.header-pages ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.header-pages ul li {
+    font-family: 'Jost', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+/* ✅ Hover effect with underline animation */
+.header-pages ul li::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #CDA274; /* Gold color underline */
+    transition: width 0.3s ease-in-out;
+}
+
+.header-pages ul li:hover::after {
     width: 100%;
 }
 
-.header-pages {
-    width: 55%;
-    display: flex;
+/* ✅ Text color hover effect */
+.header-pages ul li a {
+    color: #333;
+    transition: color 0.3s;
 }
 
-.header-pages>ul{
-    list-style-type: none;
-    font-family: Jost;
-    font-weight: 400;
-    display: flex;
-    flex-direction: row;
+.header-pages ul li:hover a {
+    color: #CDA274; /* Gold color on hover */
 }
 
-.header-pages>ul>li{
-    margin-right: 6%;
-}
-li:hover{
-    color: red;
+/* ✅ Responsive Design */
+@media (max-width: 1024px) {
+    .header {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .header-logo-text {
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    .header-pages ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
 }
