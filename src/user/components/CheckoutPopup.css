@@ -1,51 +1,110 @@
+/* 🌟 Full-Screen Popup Container */
 .checkout-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.5s;
+}
+
+/* ✅ Popup Content - Glassmorphism Effect */
+.checkout-content {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  width: 420px;
+  padding: 30px;
+  text-align: center;
+  color: #fff;
+  animation: fadeIn 0.8s;
+}
+
+/* ✅ Form Group Styling */
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 5px 0;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #27ae60;
+}
+
+/* ✅ Error Message Styling */
+.error {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
+}
+
+/* ✅ Buttons Styling */
+.submit-btn, .close-btn {
+  background: linear-gradient(135deg, #4caf50, #45a049);
+  color: white;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin: 10px 5px;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #45a049, #4caf50);
+  transform: scale(1.05);
+}
+
+.close-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.close-btn:hover {
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  transform: scale(1.05);
+}
+
+/* ✅ Smooth Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 768px) {
   .checkout-content {
-    background: white;
+    width: 90%;
     padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    width: 350px;
   }
-  
-  .qr-code {
-    width: 200px;
-    margin-bottom: 15px;
+
+  .submit-btn, .close-btn {
+    width: 100%;
+    font-size: 14px;
   }
-  
-  .utr-input {
-    width: 80%;
-    padding: 8px;
-    margin-top: 10px;
-  }
-  
-  button {
-    background-color: gold;
-    color: black;
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .countdown {
-    font-size: 18px;
-    color: red;
-  }
-  
-  .status {
-    font-weight: bold;
-    margin-top: 10px;
-  }
-  
+}

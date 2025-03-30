@@ -1,85 +1,165 @@
-const express = require('express');
-const { placeOrder } = require('../controllers/orderController');
+import express from "express";
+import Order from "../models/Order.js";
+
 const router = express.Router();
-const Order = require("../models/Order");
-const nodemailer = require("nodemailer");
 
-// ✅ Existing route for placing an order
-router.post('/', placeOrder);
+// ✅ Store new order
+router.post("/", async (req, res) => {
+  console.log("🔥 Received Order Data:", req.body);  // Debug log
 
-// ✅ Route for confirming an order without sending an email
-router.put("/:id/confirm", async (req, res) => {
-  try {
-    const order = await Order.findById(req.params.id);
+  const { buyerName, email, phone, products, deliveryDetails, status } = req.body;
 
-    if (!order) {
-      return res.status(404).send("Order not found");
-    }
-
-    // ✅ Update order status to "Confirmed"
-    order.status = "Confirmed";
-    await order.save();
-
-    res.status(200).send("✅ Order confirmed successfully!");
-  } catch (error) {
-    console.error("Error confirming order:", error);
-    res.status(500).send("❌ Failed to confirm order.");
+  if (!buyerName || !email || !phone || !deliveryDetails || products.length === 0) {
+    return res.status(400).json({ message: "All fields are required" });
   }
-});
 
-// ✅ New route for confirming an order + sending email
-router.put("/:id/confirm-email", async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).send("Order not found");
-    }
-
-    // ✅ Update order status to "Confirmed"
-    order.status = "Confirmed";
-    await order.save();
-
-    // ✅ Email setup with Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "pandyaparth158@gmail.com",         // ✅ Your Gmail ID
-        pass: "Parth@1905",                     // ✅ Your Gmail password or app password
-      },
+    const newOrder = new Order({
+      buyerName,
+      email,
+      phone,
+      address: deliveryDetails.address,  // Mapping address correctly
+      products: products.map((item) => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image
+      })),
+      status: status || "Pending"
     });
 
-    const mailOptions = {
-      from: "pandyaparth158@gmail.com",
-      to: order.email,                         // ✅ Send to the order's email
-      subject: "Order Confirmation ✅",
-      html: `
-        <h1>Jalaram Interior Welcomes You</h1>
-        <h2>Order Confirmed</h2>
-        <p>Dear ${order.buyerName},</p>
-        <p>Your order has been successfully confirmed.</p>
-        <p>Our team will contact you soon for payment and re-confirmation.</p>
-        <p>Thank you for shopping with us!</p>
-        <p>📦 Products: ${order.products.length} items</p>
-        <p>📧 Email: ${order.email}</p>
-        <p>📞 Phone: ${order.phone}</p>
-        <br />
-        <p>Regards,</p>
-        <p>Jalaram Interior Pvt Ltd</p>
-        <p>PARTH PANDYA - CEO</p>
-        <p>RUSHANG KAVA</p>
-        <p>VIVEK BHAKHAR</p>
-      `,
-    };
+    await newOrder.save();
+    console.log("✅ Order saved successfully:", newOrder);
 
-    await transporter.sendMail(mailOptions);
-
-    res.status(200).send("✅ Order confirmed and email sent!");
+    res.status(201).json({ success: true, message: "Order saved successfully!", order: newOrder });
 
   } catch (error) {
-    console.error("Error confirming order with email:", error);
-    res.status(500).send("❌ Failed to confirm order with email.");
+    console.error("❌ Error saving order:", error);
+    res.status(500).json({ success: false, message: "Failed to save order" });
   }
 });
 
-module.exports = router;
+// ✅ Fetch all orders with pagination & sorting
+router.get("/", async (req, res) => {
+  const { page = 1, limit = 10, sort = "-createdAt" } = req.query;
+
+  try {
+    const orders = await Order.find()
+      .sort(sort)
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const totalOrders = await Order.countDocuments();
+
+    res.status(200).json({
+      totalPages: Math.ceil(totalOrders / limit),
+      currentPage: parseInt(page),
+      orders,
+    });
+
+  } catch (error) {
+    console.error("❌ Error fetching orders:", error);
+    res.status(500).json({ message: "Failed to fetch orders" });
+  }
+});
+
+// ✅ Fetch a single order by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json(order);
+
+  } catch (error) {
+    console.error("❌ Error fetching order by ID:", error);
+    res.status(500).json({ message: "Failed to fetch order" });
+  }
+});
+
+// ✅ Update order status by ID
+router.put("/:id/status", async (req, res) => {
+  const { status } = req.body;
+
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json({
+      message: "✅ Order status updated successfully!",
+      order: updatedOrder,
+    });
+
+  } catch (error) {
+    console.error("❌ Error updating order status:", error);
+    res.status(500).json({ message: "Failed to update order status" });
+  }
+});
+router.get("/track/:phone", async (req, res) => {
+  const { phone } = req.params;
+
+  try {
+    const orders = await Order.find({ phone });
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this number" });
+    }
+
+    res.status(200).json(orders);
+
+  } catch (error) {
+    console.error("❌ Error tracking order:", error);
+    res.status(500).json({ message: "Failed to track order" });
+  }
+});
+// ✅ Delete order by ID
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+
+    if (!deletedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json({
+      message: "✅ Order deleted successfully",
+      order: deletedOrder
+    });
+
+  } catch (error) {
+    console.error("❌ Error deleting order:", error);
+    res.status(500).json({ message: "Failed to delete order" });
+  }
+});
+// ✅ Cancel all orders by phone number
+router.put("/cancel/:phone", async (req, res) => {
+  const { phone } = req.params;
+
+  try {
+    const result = await Order.updateMany(
+      { phone },
+      { $set: { status: "Cancelled" } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "No orders found for this number." });
+    }
+
+    res.status(200).json({ message: "✅ All orders cancelled successfully!" });
+  } catch (error) {
+    console.error("❌ Error cancelling orders:", error);
+    res.status(500).json({ message: "Failed to cancel orders." });
+  }
+});
+
+export default router;

@@ -1,65 +1,105 @@
-import { useState } from 'react';
-import ManageProducts from '../components/ManageProducts';
-import AddProduct from '../components/AddProduct';
-import './AdminDashboard.css';
-import AdminUTR from '../components/AdminUTR';
-import AdminOrders from '../components/AdminOrders';
-import OrderFilter from '../components/OrderFilter';
+import { useState } from "react";
+import ManageProducts from "../components/ManageProducts";
+import AddProduct from "../components/AddProduct";
+import AdminUTR from "../components/AdminUTR";
+import AdminOrders from "../components/AdminOrders";
+import OrderFilter from "../components/OrderFilter";
+import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Login state
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState("addProduct"); // Default active tab
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    // Check credentials
-    if (username === 'admin' && password === 'admin@001') {
-      setIsAuthenticated(true); // Grant access
-      setError(''); // Clear error message
+    if (username === "admin" && password === "admin@001") {
+      setIsAuthenticated(true);
+      setError("");
     } else {
-      setError('Invalid username or password');
+      setError("Invalid username or password");
     }
   };
 
   return (
-    <div>
+    <div className="admin-dashboard">
       {!isAuthenticated ? (
-        <div>
+        <div className="admin-login-container">
+          <h2>Admin Login</h2>
           <form onSubmit={handleLogin}>
-            <div>
-              <label>Username:</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label>Password:</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
             <button type="submit">Login</button>
           </form>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {error && <p className="error-message">{error}</p>}
         </div>
       ) : (
         <>
-          <AddProduct />
-          <ManageProducts />
-          <AdminOrders />
-          <OrderFilter/>
+          {/* ✅ Navbar */}
+          <nav className="admin-navbar">
+            <button
+              className={activeTab === "addProduct" ? "active" : ""}
+              onClick={() => setActiveTab("addProduct")}
+            >
+              ➕ Add Product
+            </button>
+            <button
+              className={activeTab === "manageProducts" ? "active" : ""}
+              onClick={() => setActiveTab("manageProducts")}
+            >
+              🛒 Manage Products
+            </button>
+            <button
+              className={activeTab === "adminOrders" ? "active" : ""}
+              onClick={() => setActiveTab("adminOrders")}
+            >
+              📦 Admin Orders
+            </button>
+            <button
+              className={activeTab === "orderFilter" ? "active" : ""}
+              onClick={() => setActiveTab("orderFilter")}
+            >
+              🔍 Order Filter
+            </button>
+            {/* <button
+              className={activeTab === "utr" ? "active" : ""}
+              onClick={() => setActiveTab("utr")}
+            >
+              💳 Admin UTR
+            </button> */}
+            <button
+              className="logout-btn"
+              onClick={() => setIsAuthenticated(false)}
+            >
+              🚪 Logout
+            </button>
+          </nav>
+
+          {/* ✅ Component Rendering */}
+          <div className="component-container">
+            {activeTab === "addProduct" && <AddProduct />}
+            {activeTab === "manageProducts" && <ManageProducts />}
+            {activeTab === "adminOrders" && <AdminOrders />}
+            {activeTab === "orderFilter" && <OrderFilter />}
+            {/* {activeTab === "utr" && <AdminUTR />} */}
+          </div>
         </>
       )}
-    </div>  
+    </div>
   );
 };
 

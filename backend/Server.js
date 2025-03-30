@@ -2,25 +2,31 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
-import connectDB from "./config/db.js"; // MongoDB connection
-import authRoutes from "./routes/Auth.js";
-import productRoutes from "./routes/productRoutes.js";
+import connectDB from "./config/db.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
-import blogContactRoutes from "./routes/blogContactRoutes.js"; // ✅ Import the new blog contact route
+import products from "./routes/product.js"
+import authRoutes from "./routes/auth.js"; 
+import Order from "./models/order.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 const app = express();
 
+// ✅ Middleware
 app.use(express.json());
 
+// ✅ CORS settings
 const corsOptions = {
   origin: "http://localhost:3000",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type"],
 };
 app.use(cors(corsOptions));
-app.options("*", cors());
+
+// ✅ MongoDB Connection
+connectDB();
 
 mongoose
   .connect(process.env.MONGO_URI || "mongodb://localhost:27017/testing", {
@@ -30,10 +36,31 @@ mongoose
   .then(() => console.log("✅ MongoDB connected"))
   .catch((error) => console.error("❌ MongoDB connection error:", error));
 
-app.use("/api/Auth", authRoutes);
-app.use("/api/products", productRoutes);
+// ✅ Use the routes
+app.use("/api/orders", orderRoutes);       // Orders route
+app.use("/api/blog-contact", blogRoutes);
+app.use("/api/products", products);
 app.use("/api/contact", contactRoutes);
-app.use("/api/blog-contact", blogContactRoutes);  // ✅ Add blog contact route
+app.use("/api/auth", authRoutes);  
+app.put("/api/orders/:id/status", async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({ msg: "Order not found" });
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.status(200).json({ msg: `Order status updated to ${status}` });
+  } catch (error) {
+    console.error("❌ Error updating order status:", error);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
 
 app.get("/", (req, res) => {
   res.send("✅ Server is up and running!");

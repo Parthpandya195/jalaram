@@ -1,74 +1,153 @@
-/* General Styling */
+/* 🌟 General Styling */
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-  }
-  
-  /* Product Display Container */
+  font-family: 'Poppins', sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+/* ✅ Product Display Container */
+.product-display-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+}
+
+/* ✅ Cart Button */
+.cart-button-container {
+  position: sticky;
+  top: 20px;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.cart-btn {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+  border: none;
+  padding: 15px 35px;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.cart-btn:hover {
+  background: linear-gradient(135deg, #e67e22, #f39c12);
+  transform: scale(1.1);
+}
+
+.pulse {
+  animation: pulse 0.6s;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* ✅ Product Grid Layout */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+/* ✅ Product Card */
+.product-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* ✅ Product Image */
+.product-image-wrapper {
+  width: 100%;
+  height: 260px;
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.3s;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.1);
+}
+
+/* ✅ Product Details */
+.product-details {
+  padding: 20px;
+  text-align: center;
+}
+
+.product-name {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin: 10px 0;
+}
+
+.product-price {
+  color: #27ae60;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+/* ✅ Add to Cart Button */
+.add-to-cart-btn {
+  background: linear-gradient(135deg, #4caf50, #45a049);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-to-cart-btn:hover {
+  background: linear-gradient(135deg, #45a049, #4caf50);
+  transform: scale(1.05);
+}
+
+/* ✅ Loading Spinner */
+.loading-spinner {
+  text-align: center;
+  font-size: 18px;
+  color: #3498db;
+  margin: 40px 0;
+  animation: fadeIn 0.8s;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 768px) {
   .product-display-container {
-    max-width: 1200px;
-    margin: 40px auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
     padding: 20px;
   }
-  
-  /* Product Card */
-  .product-card {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
+
+  .products-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+  .cart-btn {
+    padding: 12px 24px;
   }
-  
-  /* Product Image */
-  .product-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  /* Product Name */
-  .product-name {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 10px 0;
-    color: #333;
-  }
-  
-  /* Product Price */
-  .product-price {
-    font-size: 16px;
-    font-weight: 500;
-    color: #007bff;
-    margin-bottom: 10px;
-  }
-  
-  /* Product Description */
-  .product-description {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.5;
-  }
-  
-  /* Loading and Error Messages */
-  .loading-message,
-  .error-message {
-    text-align: center;
-    font-size: 16px;
-    font-weight: 500;
-    color: red;
-    margin-top: 20px;
-  }
-  
+}

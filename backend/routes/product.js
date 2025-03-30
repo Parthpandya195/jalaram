@@ -14,20 +14,20 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ Add a new product
+// ✅ Add a new product (NO category validation)
 router.post("/", async (req, res) => {
-  const { name, image, price, description, category } = req.body;
+  const { name, image, price, description } = req.body;  // Removed category
 
-  if (!name || !image || !price || !description || !category) {
+  // ✅ Validate required fields
+  if (!name || !image || !price || !description) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   try {
     const newProduct = new Product({
-        id,
       name,
       image,
-      price,
+      price: Number(price),      // Ensure price is saved as a number
       description
     });
 
@@ -36,6 +36,7 @@ router.post("/", async (req, res) => {
       message: "✅ Product added successfully!",
       product: newProduct,
     });
+
   } catch (error) {
     console.error("❌ Error adding product:", error);
     res.status(500).json({ message: "Failed to add product" });
@@ -44,12 +45,12 @@ router.post("/", async (req, res) => {
 
 // ✅ Update a product by ID
 router.put("/:id", async (req, res) => {
-  const { id,name, image, price, description } = req.body;
+  const { name, image, price, description } = req.body;
 
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
-      { id,name, image, price, description },
+      { name, image, price: Number(price), description },
       { new: true }
     );
 
@@ -61,6 +62,7 @@ router.put("/:id", async (req, res) => {
       message: "✅ Product updated successfully!",
       product: updatedProduct,
     });
+
   } catch (error) {
     console.error("❌ Error updating product:", error);
     res.status(500).json({ message: "Failed to update product" });

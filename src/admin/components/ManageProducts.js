@@ -3,21 +3,19 @@ import axios from 'axios';
 import './ManageProducts.css';
 
 const ManageProducts = () => {
-  const [products, setProducts] = useState([]); // Ensure initial state is an array
-  const [loading, setLoading] = useState(true); // For loading state
-  const [error, setError] = useState(null); // For error handling
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const { data } = await axios.get('http://localhost:5000/api/products');
         
-        // Check if response data is wrapped in an object with a 'data' key
         if (Array.isArray(data)) {
           setProducts(data);
         } else if (data && Array.isArray(data.data)) {
-          setProducts(data.data); // Assuming the products are in 'data.data'
+          setProducts(data.data);
         } else {
           throw new Error('Unexpected data format');
         }
@@ -32,14 +30,11 @@ const ManageProducts = () => {
     fetchProducts();
   }, []);
 
-  // ✅ Updated Delete Function
   const deleteProduct = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         const response = await axios.delete(`http://localhost:5000/api/products/${id}`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         });
 
         if (response.status === 200) {
@@ -59,23 +54,27 @@ const ManageProducts = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
+    <div className="manage-products">
       <h1>Manage Products</h1>
-      <ul>
+      <div className="product-grid">
         {products.length > 0 ? (
           products.map((product) => (
-            <li key={product._id}>
-              <h3>{product.name}</h3>
-              <img src={product.image} alt={product.name} style={{ width: '100px' }} />
-              <p>{product.description}</p>
-              <p>Price: {product.price}</p>
-              <button onClick={() => deleteProduct(product._id)}>Delete</button>
-            </li>
+            <div key={product._id} className="product-card">
+              <img src={product.image} alt={product.name} className="product-image" />
+              <div className="product-info">
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <p className="price">💲 {product.price}</p>
+              </div>
+              <button onClick={() => deleteProduct(product._id)} className="delete-btn">
+                🗑️ Delete
+              </button>
+            </div>
           ))
         ) : (
           <p>No products available.</p>
         )}
-      </ul>
+      </div>
     </div>
   );
 };

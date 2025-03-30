@@ -1,98 +1,127 @@
-/* Manage Products Container */
+/* 🌟 General Styling */
 .manage-products {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 40px auto;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    background: #f4f4f4;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
-}
-
-/* Title Styling */
-.manage-products h1 {
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  .manage-products h1 {
     color: #333;
-    font-size: 4px;
-    margin-bottom: 20px;
-}
-
-/* Product List */
-.manage-products ul {
-    list-style: none;
-    padding: 0;
-}
-
-/* Product Items */
-.manage-products li {
+    font-size: 32px;
+    margin-bottom: 30px;
+    font-weight: bold;
+  }
+  
+  /* ✅ Product Grid */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    justify-content: center;
+  }
+  
+  /* ✅ Product Card */
+  .product-card {
+    background: linear-gradient(135deg, #ffffff, #f1f1f1);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    background: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    transition: 0.3s ease-in-out;
-}
-
-/* Hover Effect */
-.manage-products li:hover {
-    transform: scale(1.02);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Product Image */
-.manage-products img {
-    width: 80px;
-    height: 80px;
-    border-radius: 5px;
+    padding: 20px;
+  }
+  
+  /* ✅ Hover Effects */
+  .product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* ✅ Product Image */
+  .product-image {
+    width: 100%;
+    height: 180px;
     object-fit: cover;
-}
-
-/* Product Details */
-.manage-products p {
-    font-size: 14px;
+    border-radius: 8px;
+    transition: 0.3s;
+  }
+  
+  .product-card:hover .product-image {
+    transform: scale(1.05);
+  }
+  
+  /* ✅ Product Info */
+  .product-info {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .product-info h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .product-info p {
     color: #555;
-    margin: 5px 0;
-}
-
-/* Delete Button */
-.manage-products button {
-    padding: 10px 15px;
-    background: #dc3545;
-    border: none;
-    color: white;
     font-size: 14px;
-    border-radius: 5px;
+    line-height: 1.6;
+  }
+  
+  /* ✅ Price */
+  .price {
+    font-size: 18px;
+    color: #27ae60;
+    font-weight: bold;
+  }
+  
+  /* ✅ Delete Button */
+  .delete-btn {
+    background: linear-gradient(135deg, #ff5f6d, #ffc371);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 14px;
     cursor: pointer;
     transition: 0.3s;
-}
-
-/* Delete Button Hover */
-.manage-products button:hover {
-    background: #c82333;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .manage-products {
-        max-width: 95%;
-        padding: 15px;
+    margin-top: 15px;
+  }
+  
+  .delete-btn:hover {
+    background: linear-gradient(135deg, #ff4b4b, #ffbb33);
+    transform: scale(1.05);
+  }
+  
+  /* ✅ Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
     }
-
-    .manage-products li {
-        flex-direction: column;
-        text-align: center;
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
-
-    .manage-products img {
-        width: 100px;
-        height: 100px;
-        margin-bottom: 10px;
+  }
+  
+  /* 🌟 Responsive Design */
+  @media (max-width: 1024px) {
+    .product-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
-
-    .manage-products button {
-        width: 100%;
-        margin-top: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .product-grid {
+      grid-template-columns: 1fr;
     }
-}
+  }
+  

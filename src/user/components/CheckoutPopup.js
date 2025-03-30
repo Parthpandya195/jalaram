@@ -4,7 +4,7 @@ import "./CheckoutPopup.css";
 
 const CheckoutPopup = ({ cart = [], onClose, clearCart }) => {
   const [orderPlaced, setOrderPlaced] = useState(false);
-
+  const [errors, setErrors] = useState({});
   const [deliveryDetails, setDeliveryDetails] = useState({
     name: "",
     email: "",
@@ -12,9 +12,39 @@ const CheckoutPopup = ({ cart = [], onClose, clearCart }) => {
     address: "",
   });
 
+  // ✅ Form Validation
+  const validateForm = () => {
+    const newErrors = {};
+
+    // ✅ Name Validation
+    if (!deliveryDetails.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    // ✅ Email Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(deliveryDetails.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    // ✅ Phone Number Validation (10 digits)
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(deliveryDetails.phone)) {
+      newErrors.phone = "Phone number must be 10 digits";
+    }
+
+    // ✅ Address Validation
+    if (!deliveryDetails.address.trim()) {
+      newErrors.address = "Address is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;  // ✅ Form is valid if no errors
+  };
+
+  // ✅ Handle Order Submission
   const handleOrder = async () => {
-    if (!deliveryDetails.name || !deliveryDetails.email || !deliveryDetails.phone || !deliveryDetails.address) {
-      alert("Please fill all the required fields!");
+    if (!validateForm()) {
       return;
     }
 
@@ -27,18 +57,19 @@ const CheckoutPopup = ({ cart = [], onClose, clearCart }) => {
       status: "Pending",
     };
 
-    console.log("Sending Order Data:", orderData); // Debugging log
-
     try {
-      const res = await axios.post("http://localhost:5000/api/order", orderData);
-
+      const res = await axios.post("http://localhost:5000/api/orders", orderData);
       if (res.data.success) {
         setOrderPlaced(true);
         clearCart();
+
+        // ✅ Reload page after 2 seconds for a smooth transition
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);  
       }
     } catch (error) {
       console.error("Error placing order:", error.response ? error.response.data : error);
-      // alert("Failed to place order.");
     }
   };
 
@@ -46,20 +77,57 @@ const CheckoutPopup = ({ cart = [], onClose, clearCart }) => {
     <div className="checkout-popup">
       <div className="checkout-content">
         {orderPlaced ? (
-          <h2>✅ Order Placed Successfully! <br /> our Team will contact you soon </h2>
+          <h2>✅ Order Placed Successfully! <br /> Our team will contact you soon. 🚀</h2>
         ) : (
           <>
-            <h2>Enter Delivery Details</h2>
-            <input type="text" placeholder="Full Name" onChange={(e) => setDeliveryDetails((prev) => ({ ...prev, name: e.target.value }))} />
-            <input type="email" placeholder="Email" onChange={(e) => setDeliveryDetails((prev) => ({ ...prev, email: e.target.value }))} />
-            <input type="text" placeholder="Phone Number" onChange={(e) => setDeliveryDetails((prev) => ({ ...prev, phone: e.target.value }))} />
-            <textarea placeholder="Address" onChange={(e) => setDeliveryDetails((prev) => ({ ...prev, address: e.target.value }))} />
+            <h2>🛒 Enter Delivery Details</h2>
 
-            <button onClick={handleOrder}>Submit Order</button>
+            <div className="form-group">
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={deliveryDetails.name}
+                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, name: e.target.value })}
+              />
+              {errors.name && <span className="error">{errors.name}</span>}
+            </div>
+
+            <div className="form-group">
+              <input
+                type="email"
+                placeholder="Email"
+                value={deliveryDetails.email}
+                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, email: e.target.value })}
+              />
+              {errors.email && <span className="error">{errors.email}</span>}
+            </div>
+
+            <div className="form-group">
+              <input
+                type="text"
+                placeholder="Phone Number"
+                value={deliveryDetails.phone}
+                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, phone: e.target.value })}
+              />
+              {errors.phone && <span className="error">{errors.phone}</span>}
+            </div>
+
+            <div className="form-group">
+              <textarea
+                placeholder="Address"
+                value={deliveryDetails.address}
+                onChange={(e) => setDeliveryDetails({ ...deliveryDetails, address: e.target.value })}
+              />
+              {errors.address && <span className="error">{errors.address}</span>}
+            </div>
+
+            <button className="submit-btn" onClick={handleOrder}>
+              🚀 Submit Order
+            </button>
           </>
         )}
 
-        <button onClick={onClose}>Close</button>
+        <button className="close-btn" onClick={onClose}>❌ Close</button>
       </div>
     </div>
   );
