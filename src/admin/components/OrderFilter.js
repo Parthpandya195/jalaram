@@ -51,15 +51,30 @@ const OrderFilter = () => {
       <h2>Manage Orders</h2>
 
       <div className="filter-buttons">
-        <button onClick={() => setFilter("Pending")}>
-          📌 Pending Orders
-        </button>
-        <button onClick={() => setFilter("Confirmed")}>
-          ✅ Confirmed Orders
-        </button>
-        <button onClick={() => setFilter("Rejected")}>
-          ❌ Rejected Orders
-        </button>
+      <button
+  className={filter === "Pending" ? "active" : ""}
+  onClick={() => setFilter("Pending")}
+>
+  📌 Pending Orders
+</button>
+<button
+  className={filter === "Confirmed" ? "active" : ""}
+  onClick={() => setFilter("Confirmed")}
+>
+  ✅ Confirmed Orders
+</button>
+<button
+  className={filter === "Rejected" ? "active" : ""}
+  onClick={() => setFilter("Rejected")}
+>
+  ❌ Rejected Orders
+</button>
+<button
+  className={filter === "Cancelled" ? "active" : ""}
+  onClick={() => setFilter("Cancelled")}
+>
+  🚫 Cancelled Orders
+</button>
       </div>
 
       <div className="order-list">
@@ -80,6 +95,7 @@ const OrderFilter = () => {
                 <option value="Pending">Pending</option>
                 <option value="Confirmed">Confirmed</option>
                 <option value="Rejected">Rejected</option>
+                <option value="Cancelled">Cancelled</option>
               </select>
             </div>
           ))

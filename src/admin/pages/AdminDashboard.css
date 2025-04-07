@@ -63,7 +63,7 @@
 .admin-navbar {
   display: flex;
   justify-content: space-around;
-  background: #4333b9;
+  background: gold;
   padding: 15px 0;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
